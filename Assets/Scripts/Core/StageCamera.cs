@@ -134,14 +134,19 @@ namespace FairyGUI
             }
         }
 
+#if UNITY_EDITOR
         void OnRenderObject()
         {
             //Update和OnGUI在EditMode的调用都不那么及时，OnRenderObject则比较频繁，可以保证界面及时刷新。所以使用OnRenderObject
             if (isMain && !Application.isPlaying)
             {
-                EMRenderSupport.Update();
+                // fix: crash on DomainReload under URP 3D
+
+                // EMRenderSupport.Update();
+                UnityEditor.EditorApplication.delayCall += EMRenderSupport.Update;
             }
         }
+#endif
 
         public void ApplyModifiedProperties()
         {
